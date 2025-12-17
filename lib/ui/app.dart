@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'expenses/expenses.dart';
+import 'expenses/expense.dart';
+import 'expenses/category_summary.dart';
 import 'expenses/expense_form.dart';
-import '../models/expense_model.dart';
+import '../model/expense_model.dart';
 import '../data/expenses_data.dart';
 
 class App extends StatefulWidget {
@@ -18,6 +19,27 @@ class _AppState extends State<App> {
     setState(() {
       _expenses.add(expense);
     });
+  }
+
+  void _deleteExpense(Expense expense) {
+    setState(() {
+      _expenses.remove(expense);
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Expense deleted'),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _expenses.add(expense); 
+            });
+          },
+        ),
+      ),
+    );
   }
 
   void openAddExpenseOverlay(BuildContext context) {
@@ -76,7 +98,7 @@ class _AppState extends State<App> {
       backgroundColor: Colors.blue[100],
       appBar: AppBar(
         backgroundColor: Colors.blue[700],
-        title: const Text('MyExpense App not Yours'),
+        title: const Text('MyExpense App'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -84,7 +106,24 @@ class _AppState extends State<App> {
           ),
         ],
       ),
-      body: ExpensesView(expenses: _expenses),
+      body: Column(
+        children: [
+          CategorySummary(expenses: _expenses),
+          Expanded(
+            child: _expenses.isEmpty
+                ? Center(
+                    child: Text(
+                      'No expenses found. Start adding some!',
+                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                    ),
+                  )
+                : ExpensesView(
+                    expenses: _expenses,
+                    onDeleteExpense: _deleteExpense,
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

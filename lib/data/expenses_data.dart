@@ -1,4 +1,4 @@
-import '../models/expense_model.dart';
+import '../model/expense_model.dart';
 
 List<Expense> dummyExpenses = [
   Expense(
@@ -18,7 +18,7 @@ List<Expense> dummyExpenses = [
     amount: 82.12,
     date: DateTime.now(),
     category: Category.food,
-  ),
+  ),  
   Expense(
     title: 'New Shoes',
     amount: 69.99,
